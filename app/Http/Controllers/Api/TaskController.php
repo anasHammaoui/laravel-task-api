@@ -64,7 +64,7 @@ class TaskController extends Controller
         ]);
         $findTask = ModelsTask::where('id',$id) -> first();
         if (!$findTask){
-            return response() -> json(['message'=> "task n'existe pas"]);
+            return response() -> json(['message'=> "task n'existe pas"],404);
         }
         $task = $findTask -> update([
             'title' => $validate['title'],
@@ -72,7 +72,14 @@ class TaskController extends Controller
             'user_id' => auth('api') -> user() -> id
            ]
         );
-        return response() -> json(['message' => 'task a ete modifier avec success']);
-       
+        return response() -> json(['message' => 'task a ete modifier avec success'],200);
+    }
+    // destroy
+    public function destroy($id){
+        if (ModelsTask::find($id) -> delete()){
+        return response() -> json(['message'=>'le task a ete supprime avec success'],200);
+        } else {
+            return response() -> json(['message'=>'la supprission est echoue'],404);
+        }
     }
 }
