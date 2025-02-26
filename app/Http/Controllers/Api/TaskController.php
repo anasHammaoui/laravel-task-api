@@ -43,7 +43,7 @@ class TaskController extends Controller
             ],404);
         }
     }
-    // // update a task
+    // // show a task
     public function show($id){
         $task = ModelsTask::where('id',$id) -> get();
         if ($task -> count() > 0){
@@ -55,5 +55,24 @@ class TaskController extends Controller
                 'message' => "task n'existe pas",
             ]);
         }
+    }
+    // update a task
+    public function update(Request $request, $id){
+        $validate = $request -> validate([
+            'title' => 'required|min:4',
+            'due_date' => 'required',
+        ]);
+        $findTask = ModelsTask::where('id',$id) -> first();
+        if (!$findTask){
+            return response() -> json(['message'=> "task n'existe pas"]);
+        }
+        $task = $findTask -> update([
+            'title' => $validate['title'],
+            'due_date' => $validate['due_date'],
+            'user_id' => auth('api') -> user() -> id
+           ]
+        );
+        return response() -> json(['message' => 'task a ete modifier avec success']);
+       
     }
 }
