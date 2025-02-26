@@ -20,11 +20,27 @@ class TaskController extends Controller
         }
     }
     // // create a task
-    // public function store(Request $request){
-    //     $validate = Validator::make($request -> all(),[
-    //         'title' => 'required|min:4',
-    //         'due_date' => 'required',
-    //         'user_id' => Auth::
-    //     ]);
-    // }
+    public function store(Request $request){
+        $validate = $request -> validate([
+            'title' => 'required|min:4',
+            'due_date' => 'required',
+        ]);
+        $task = ModelsTask::create([
+            'title' => $validate['title'],
+            'due_date' => $validate['due_date'],
+            'user_id' => auth('api') -> user() -> id
+           ]
+        );
+        $task = ModelsTask::find($task -> id);
+        if ($task){
+            return response()-> json([
+                'message' => 'success',
+                'task' => $task,
+            ],200);
+        } else {
+            return response()-> json([
+                'message' => 'error',
+            ],404);
+        }
+    }
 }
