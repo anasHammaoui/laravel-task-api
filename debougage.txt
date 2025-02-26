@@ -1,0 +1,29 @@
+public function store(Request $request)
+{
+    try {
+        $validatedData = $request->validate([
+            'title' => 'required|unique',
+            'due_date' => 'required',
+        ]);
+        if (!Auth::guard('sanctum')->check()) {
+            return response()->json(['message' => 'non authentifier'], 401);
+        }
+        $task = new Task();
+        $task->title = $validatedData['title'];
+        $task->status = 'pending';
+        $task->due_date = $validatedData['due_date'];
+        $task->user_id = Auth::id();
+        $task->save();
+
+        return response()->json([
+            'message' => 'Task cree avec succcess',
+            'task' => $task
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'error pendant la creation',
+            'error' => $e->getMessage()
+        ],400);
+    }
+}
