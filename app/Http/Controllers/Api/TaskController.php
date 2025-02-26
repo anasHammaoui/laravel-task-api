@@ -45,7 +45,7 @@ class TaskController extends Controller
     }
     // // show a task
     public function show($id){
-        $task = ModelsTask::where('id',$id) -> get();
+        $task = ModelsTask::where('id',$id) -> where('user_id',auth('api') -> user() -> id) -> get();
         if ($task -> count() > 0){
             return response() -> json([
                 'task' => $task,
@@ -76,7 +76,7 @@ class TaskController extends Controller
     }
     // destroy
     public function destroy($id){
-        if (ModelsTask::find($id) -> delete()){
+        if (ModelsTask::find($id) -> where('user_id',auth('api') -> user() -> id) -> delete()){
         return response() -> json(['message'=>'le task a ete supprime avec success'],200);
         } else {
             return response() -> json(['message'=>'la supprission est echoue'],404);
