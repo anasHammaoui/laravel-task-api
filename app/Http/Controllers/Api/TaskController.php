@@ -76,7 +76,7 @@ class TaskController extends Controller
     }
     // destroy
     public function destroy($id){
-        if (ModelsTask::find($id) -> where('user_id',auth('api') -> user() -> id) -> delete()){
+        if (ModelsTask::find($id) -> delete()){
         return response() -> json(['message'=>'le task a ete supprime avec success'],200);
         } else {
             return response() -> json(['message'=>'la supprission est echoue'],404);
