@@ -12,7 +12,7 @@ class TaskController extends Controller
 {
     // all tasks
     public function index(){
-        $tasks = ModelsTask::all();
+        $tasks = ModelsTask::where('user_id',auth() ->user() -> id) -> get();
         if ($tasks -> count() > 0){
             return TaskResource::collection($tasks);
         } else {
@@ -41,6 +41,19 @@ class TaskController extends Controller
             return response()-> json([
                 'message' => 'error',
             ],404);
+        }
+    }
+    // // update a task
+    public function show($id){
+        $task = ModelsTask::where('id',$id) -> get();
+        if ($task -> count() > 0){
+            return response() -> json([
+                'task' => $task,
+            ]);
+        } else {
+            return response() -> json([
+                'message' => "task n'existe pas",
+            ]);
         }
     }
 }
